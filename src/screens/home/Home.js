@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import './Home.css';
 import Header from '../../common/header/Header';
-import Details from '../details/Details';
 import { withStyles } from '@material-ui/core/styles';
-import moviesData from '../../common/movieData';
-import genres from '../../common/genres';
-import artists from '../../common/artists';
+import moviesData from '../../assets/movieData';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
+import genres from '../../common/genres';
+import artists from '../../common/artists';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import FormControl from '@material-ui/core/FormControl';
@@ -48,7 +46,6 @@ const styles = theme => ({
         minWidth: 240,
         maxWidth: 240
     },
-
     title: {
         color: theme.palette.primary.light,
     }
@@ -78,17 +75,19 @@ class Home extends Component {
     }
 
     movieClickHandler = (movieId) => {
-        ReactDOM.render(<Details movieId={movieId} />, document.getElementById('root'));
-        
+        this.props.history.push('/movie/' + movieId);
     }
+
     render() {
         const { classes } = this.props;
         return (
             <div>
                 <Header />
+
                 <div className={classes.upcomingMoviesHeading}>
                     <span>Upcoming Movies</span>
                 </div>
+
                 <GridList cols={5} className={classes.gridListUpcomingMovies} >
                     {moviesData.map(movie => (
                         <GridListTile key={movie.id}>
@@ -97,9 +96,10 @@ class Home extends Component {
                         </GridListTile>
                     ))}
                 </GridList>
+
                 <div className="flex-container">
                     <div className="left">
-                        <GridList cellHeight={350} cols={3} className={classes.gridListMain}>
+                        <GridList cellHeight={350} cols={4} className={classes.gridListMain}>
                             {moviesData.map(movie => (
                                 <GridListTile onClick={() => this.movieClickHandler(movie.id)} className="released-movie-grid-item" key={"grid" + movie.id}>
                                     <img src={movie.poster_url} className="movie-poster" alt={movie.title} />
@@ -119,20 +119,21 @@ class Home extends Component {
                                         FIND MOVIES BY:
                                     </Typography>
                                 </FormControl>
+
                                 <FormControl className={classes.formControl}>
                                     <InputLabel htmlFor="movieName">Movie Name</InputLabel>
                                     <Input id="movieName" onChange={this.movieNameChangeHandler} />
                                 </FormControl>
+
                                 <FormControl className={classes.formControl}>
                                     <InputLabel htmlFor="select-multiple-checkbox">Genres</InputLabel>
                                     <Select
                                         multiple
-                                        input={<Input id="select-multiple-checkbox" />}
+                                        input={<Input id="select-multiple-checkbox-genre" />}
                                         renderValue={selected => selected.join(',')}
                                         value={this.state.genres}
                                         onChange={this.genreSelectHandler}
                                     >
-                                        <MenuItem value="0">None</MenuItem>
                                         {genres.map(genre => (
                                             <MenuItem key={genre.id} value={genre.name}>
                                                 <Checkbox checked={this.state.genres.indexOf(genre.name) > -1} />
@@ -151,7 +152,6 @@ class Home extends Component {
                                         value={this.state.artists}
                                         onChange={this.artistSelectHandler}
                                     >
-                                        <MenuItem value="0">None</MenuItem>
                                         {artists.map(artist => (
                                             <MenuItem key={artist.id} value={artist.first_name + " " + artist.last_name}>
                                                 <Checkbox checked={this.state.artists.indexOf(artist.first_name + " " + artist.last_name) > -1} />
@@ -160,6 +160,7 @@ class Home extends Component {
                                         ))}
                                     </Select>
                                 </FormControl>
+
                                 <FormControl className={classes.formControl}>
                                     <TextField
                                         id="releaseDateStart"
@@ -169,6 +170,7 @@ class Home extends Component {
                                         InputLabelProps={{ shrink: true }}
                                     />
                                 </FormControl>
+
                                 <FormControl className={classes.formControl}>
                                     <TextField
                                         id="releaseDateEnd"
@@ -188,7 +190,7 @@ class Home extends Component {
                         </Card>
                     </div>
                 </div>
-            </div>
+            </div >
         )
     }
 }

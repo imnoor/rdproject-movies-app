@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import Header from '../../common/header/Header';
 import Typography from '@material-ui/core/Typography';
 import './BookShow.css';
-import Home from '../home/Home';
 import language from '../../common/language';
 import location from '../../common/location';
 import showDate from '../../common/showDate';
@@ -17,7 +15,7 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import Confirmation from '../confirmation/Confirmation';
+import { Link } from 'react-router-dom';
 
 class BookShow extends Component {
 
@@ -39,13 +37,11 @@ class BookShow extends Component {
         }
     }
 
-    backToDetailsHandler = () => {
-        ReactDOM.render(<Home />, document.getElementById('root'));
-    }
 
     locationChangeHandler = event => {
         this.setState({ location: event.target.value });
     }
+
     languageChangeHandler = event => {
         this.setState({ language: event.target.value });
     }
@@ -58,8 +54,8 @@ class BookShow extends Component {
         this.setState({ showTime: event.target.value });
     }
 
-    ticketsChangeHandler = (event) => {
-        this.setState({ tickets: event.target.value })
+    ticketsChangeHandler = event => {
+        this.setState({ tickets: event.target.value });
     }
 
     bookShowButtonHandler = () => {
@@ -69,7 +65,12 @@ class BookShow extends Component {
         this.state.showTime === "" ? this.setState({ reqShowTime: "dispBlock" }) : this.setState({ reqShowTime: "dispNone" });
         this.state.tickets === 0 ? this.setState({ reqTickets: "dispBlock" }) : this.setState({ reqTickets: "dispNone" });
 
-        ReactDOM.render(<Confirmation bookingSummary={this.state} />, document.getElementById('root'));
+        if ((this.state.location === "") || (this.state.language === "") || (this.state.showTime === "") || (this.state.showDate === "") || (this.state.tickets === 0)) { return; }
+
+        this.props.history.push({
+            pathname: '/confirm/' + this.props.match.params.id,
+            bookingSummary: this.state
+        })
     }
 
     render() {
@@ -77,9 +78,10 @@ class BookShow extends Component {
             <div>
                 <Header />
                 <div className="bookShow">
-                    <Typography className="back" onClick={this.backToDetailsHandler}>
-                        &#60; Back to Movie Details
+                    <Typography className="back" >
+                        <Link to={"/movie/" + this.props.match.params.id}>&#60; Back to Movie Details</Link>
                     </Typography>
+
                     <Card className="cardStyle">
                         <CardContent>
                             <Typography variant="headline" component="h2">
@@ -157,10 +159,10 @@ class BookShow extends Component {
                             <FormControl required className="formControl">
                                 <InputLabel htmlFor="tickets">Tickets: ( {this.state.availableTickets} available )</InputLabel>
                                 <Input id="tickets" value={this.state.tickets !== 0 ? this.state.tickets : ""} onChange={this.ticketsChangeHandler} />
+                                <FormHelperText className={this.state.reqTickets}>
+                                    <span className="red">Required</span>
+                                </FormHelperText>
                             </FormControl>
-                            <FormHelperText className={this.state.reqTickets}>
-                                <span className="red">Required</span>
-                            </FormHelperText>
                             <br /><br />
                             <Typography>
                                 Unit Price: Rs. {this.state.unitPrice}

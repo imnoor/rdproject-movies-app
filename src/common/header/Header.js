@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import './Header.css';
-import BookShow from '../../screens/bookshow/BookShow';
 import Button from '@material-ui/core/Button';
 import logo from '../../assets/logo.svg';
 import Modal from 'react-modal';
@@ -9,11 +7,11 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 import PropTypes from 'prop-types';
-import InputLabel from '@material-ui/core/InputLabel';
 import FormHelperText from '@material-ui/core/FormHelperText';
-
+import { Link } from 'react-router-dom';
 
 const customStyles = {
     content: {
@@ -22,9 +20,9 @@ const customStyles = {
         right: 'auto',
         bottom: 'auto',
         marginRight: '-50%',
-        transform: 'translate(-50%,-50%)'
+        transform: 'translate(-50%, -50%)'
     }
-}
+};
 
 const TabContainer = function (props) {
     return (
@@ -47,8 +45,6 @@ class Header extends Component {
             value: 0,
             usernameRequired: "dispNone",
             username: "",
-            passwordRequired: "dispNone",
-            password: "",
             loginPasswordRequired: "dispNone",
             loginPassword: "",
             firstnameRequired: "dispNone",
@@ -61,7 +57,6 @@ class Header extends Component {
             registerPassword: "",
             contactRequired: "dispNone",
             contact: ""
-
         }
     }
 
@@ -89,8 +84,9 @@ class Header extends Component {
     closeModalHandler = () => {
         this.setState({ modalIsOpen: false });
     }
+
     tabChangeHandler = (event, value) => {
-        this.setState({ value })
+        this.setState({ value });
     }
 
     loginClickHandler = () => {
@@ -113,6 +109,7 @@ class Header extends Component {
         this.state.registerPassword === "" ? this.setState({ registerPasswordRequired: "dispBlock" }) : this.setState({ registerPasswordRequired: "dispNone" });
         this.state.contact === "" ? this.setState({ contactRequired: "dispBlock" }) : this.setState({ contactRequired: "dispNone" });
     }
+
     inputFirstNameChangeHandler = (e) => {
         this.setState({ firstname: e.target.value });
     }
@@ -133,11 +130,6 @@ class Header extends Component {
         this.setState({ contact: e.target.value });
     }
 
-    bookShowHandler = (e) => {
-        ReactDOM.render(<BookShow />, document.getElementById('root'));
-    }
-
-
     render() {
         return (
             <div>
@@ -150,9 +142,11 @@ class Header extends Component {
                     </div>
                     {this.props.showBookShowButton === "true" ?
                         <div className="bookshow-button">
-                            <Button variant="contained" color="primary" onClick={this.bookShowHandler}>
-                                Book Show
-                            </Button>
+                            <Link to={"/bookshow/" + this.props.id}>
+                                <Button variant="contained" color="primary">
+                                    Book Show
+                                </Button>
+                            </Link>
                         </div>
                         : ""}
                 </header>
@@ -167,6 +161,7 @@ class Header extends Component {
                         <Tab label="Login" />
                         <Tab label="Register" />
                     </Tabs>
+
                     {this.state.value === 0 &&
                         <TabContainer>
                             <FormControl required>
